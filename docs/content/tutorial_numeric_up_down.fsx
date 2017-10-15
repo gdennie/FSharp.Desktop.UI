@@ -20,22 +20,24 @@ open FSharp.Desktop.UI
 Basics
 ===================
 
-[Numeric Up/Down control](https://github.com/fsprojects/FSharp.Desktop.UI/tree/master/samples/NumericUpDown) is simplified version of IntegerUpDown control from [Extended WPF Toolkit](https://wpftoolkit.codeplex.com/wikipage?title=IntegerUpDown&referringTitle=NumericUpDown). 
-It provides a TextBox with button spinners that allow incrementing and decrementing int values by using the spinner buttons, 
-keyboard up/down arrows, or mouse wheel.
+[Numeric Up/Down control](https://github.com/fsprojects/FSharp.Desktop.UI/tree/master/samples/NumericUpDown) is a 
+simplified version of an IntegerUpDown control 
+from as shown in the [Extended WPF Toolkit](https://wpftoolkit.codeplex.com/wikipage?title=IntegerUpDown&referringTitle=NumericUpDown). 
+The controls consists of a TextBox with button spinners that allow incrementing and decrementing an integer value by using the 
+spinner buttons, keyboard up/down arrows, or mouse wheel.
 
-To keep it simple we will build application rather than reusable control.
+To keep it simple we will be building application rather than a reusable control.
 
 <img src="img/NumericUpDown.png"/>
 
-Let's go step-by-step through development process.
+Let's go step-by-step through the development process.
 
 Model
 -------------------------------------
-Our model has single property `Value` bounded to input text box.
-The library provides quick canonical way to define custom models. 
-Make sure to inherit model type from FSharp.Desktop.UI.Model and declare as abstract read/write properties you want to data-bind. 
-Once that done INotifyPropertyChanged and INotifyDataErrorInfo will be auto-wired.
+Our model host a single mutable integer property. Mutability permits support of wpf two databinding. The 
+library provides quick canonical way to define custom models. Make sure to inherit model type from 
+FSharp.Desktop.UI.Model and declare as abstract read/write properties you want to data-bind to. 
+Once that is done, INotifyPropertyChanged and INotifyDataErrorInfo will be auto-wired.
 
 *)
 
@@ -51,17 +53,20 @@ There are [alternative methods](ref_model.html) to define custom models.
 Events + View
 -------------------------------------
 
-Because view is essentially single event stream the best way to define variety of event is to use discriminated unions. It seems obvious that we need two events: Up and Down. Low level events like `MouseMove` or `KeyUp` are mapped into high-level ones. 
-Although it is not too hard to provide implementation of `IView<'Event, 'Model>` interface, the library provides base helper classes like View and XamlView.
+Because view is essentially a single event stream, the best way to define a variety of events is to use discriminated unions. 
+It seems obvious that we need two events: Up and Down. Low level events like `MouseMove` or `KeyUp` are mapped into high-level ones. 
+Although it is not too hard to provide implementation of `IView<'Event, 'Model>` interface, the library provides base 
+helper classes like View and XamlView.
 
-Traditional way to design actual WPF window is to use XAML designer. 
-For simplicity in this particular application we will build it in a code. 
-It also proves the point that WPF details abstracted so well that the library is agnostic to actual way WPF primitives assembled.   
+The traditional way to design an actual WPF window is to use XAML designer. 
+For simplicity in this particular application we will build it in code. 
+This approach also shows the use of WPF primitives provided by its Assembly.
 
-In addition to event sourcing View also responsible for setting up proper data bindings. 
+In addition to being the event source, the View is also responsible for setting up proper data bindings. 
+
 The library introduce [type-safe data-binding](ref_databinding.html). 
-The idea is map F# assignment statement quotation to data binding setup.  
-Other examples will expand on topic on type safe data binding.
+The idea allows the use of F# assignment statement quotation to direct the data binding composition.  
+Other examples will expand on the topic of type safe data binding.
 *)
 
 type NumericUpDownEvents = Up | Down
@@ -142,8 +147,9 @@ let controller = Controller.Create eventHandler
 Controllers in real-world application are more complex. 
 But `Controller.Create` method exists in the library and can be used as a shortcut to build simple controllers. 
 
-Pattern matching in event inside controller callback is very interesting because it represents compiler checked event handlers map. 
-To prove the point comment out one of the case, for example Down. 
+Pattern matching on events inside the controller callback exploits union types to ensure a complete coverage of all possible events
+at compile time.
+To prove the point comment out one of the cases, for example Down. 
 You will immediately see a warning from compiler "Incomplete pattern matches on this expression. 
 For example, the value 'Down' may indicate a case not covered by the pattern(s)."
 
@@ -166,8 +172,8 @@ do
 Where Are We?
 -------------------------------------
 
-It is quite remarkable what we were able to archive with such small amount of code. 
-Try to implement exactly same functionality using classic MVVM or one of the mvvm-style frameworks. 
+It is quite remarkable what we were able to archive with such in such a small amount of code. 
+Try to implementing the exact same functionality using classic MVVM or one of the mvvm-style frameworks. 
 Compare and make you own judgment. Next example is [Calculator application](tutorial_calculator.html).
 
 *)
